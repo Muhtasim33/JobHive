@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from dotenv import load_dotenv
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token
 from flask_cors import cross_origin
-from app.models import JobSeeker, Resume, Employer, Application, Job, Notification, Report
+from app.models import JobSeeker, Resume, Employer, Application, Job, Notification, Report, PendingUser
 import json
 from flask import send_from_directory
 from flask import Blueprint, request, jsonify, send_from_directory, current_app
@@ -235,12 +235,13 @@ def login():
 
 #     return jsonify({"message": "Verification code sent to your email."}), 200
 
-# Temporary storage (use Redis in production)
-pending_users = {}
+# Temporary storage replaced with database table PendingUser
+# pending_users = {}
 
 @main.route("/send-verification-code", methods=["POST"])
 @cross_origin(origin="http://localhost:5173", supports_credentials=True)
 def send_verification_code():
+    from datetime import datetime, timedelta, timezone
     data = request.get_json()
     name = data.get("name")
     email = data.get("email")
@@ -259,13 +260,29 @@ def send_verification_code():
     # ✅ Generate random 6-digit verification code
     code = str(randint(100000, 999999))
 
-    # ✅ Save pending user temporarily (in-memory)
-    pending_users[email] = {
-        "name": name,
-        "password": password,
-        "role": role,
-        "code": code,
-    }
+    # ✅ Check if there's already a pending user with this email
+    existing_pending = PendingUser.query.filter_by(email=email).first()
+    if existing_pending:
+        # Update existing pending user
+        existing_pending.name = name
+        existing_pending.set_password(password)
+        existing_pending.role = role
+        existing_pending.verification_code = code
+        existing_pending.created_at = datetime.now(timezone.utc)
+        existing_pending.expires_at = datetime.now(timezone.utc) + timedelta(hours=24)  # 24 hour expiry
+    else:
+        # ✅ Create new pending user in database
+        pending_user = PendingUser(
+            email=email,
+            name=name,
+            role=role,
+            verification_code=code,
+            expires_at=datetime.now(timezone.utc) + timedelta(hours=24)  # 24 hour expiry
+        )
+        pending_user.set_password(password)
+        db.session.add(pending_user)
+
+    db.session.commit()
 
     # ✅ Send real email using SMTP
     try:
@@ -1551,6 +1568,7 @@ from werkzeug.security import generate_password_hash
 
 @main.route("/verify-email", methods=["POST"])
 def verify_email():
+    from datetime import datetime, timezone
     data = request.get_json()
     email = data.get("email")
     code = data.get("code")
@@ -1558,23 +1576,34 @@ def verify_email():
     if not email or not code:
         return jsonify({"message": "Email and code are required."}), 400
 
-    # ✅ Lookup from pending in-memory store
-    user_data = pending_users.get(email)
-    # if not user_data:
-    #     return jsonify({"message": "No verification request found for this email."}), 404
+    # ✅ Lookup from database pending users
+    pending_user = PendingUser.query.filter_by(email=email).first()
+    if not pending_user:
+        return jsonify({"message": "No verification request found for this email."}), 404
 
-    # if user_data["code"] != code:
-    #     return jsonify({"message": "Invalid verification code."}), 400
+    # Check if the pending registration has expired
+    # Handle both naive and timezone-aware datetime comparisons
+    current_time = datetime.now(timezone.utc)
+    expires_at = pending_user.expires_at
+    
+    # If expires_at is naive, make it timezone-aware (assume UTC)
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    
+    if expires_at < current_time:
+        db.session.delete(pending_user)
+        db.session.commit()
+        return jsonify({"message": "Verification code has expired. Please request a new one."}), 400
 
-    # ✅ Hash the password
-    hashed_password = generate_password_hash(user_data["password"])
+    if pending_user.verification_code != code:
+        return jsonify({"message": "Invalid verification code."}), 400
 
     # ✅ Create verified user
     new_user = User(
-        name=user_data["name"],
+        name=pending_user.name,
         email=email,
-        password_hash=hashed_password,
-        role=user_data["role"],
+        password_hash=pending_user.password_hash,  # Already hashed in PendingUser
+        role=pending_user.role,
         is_verified=True
     )
     db.session.add(new_user)
@@ -1584,10 +1613,15 @@ def verify_email():
     if new_user.role == 'employer':
         employer = Employer(id=new_user.id, company_name="TBD", company_desc="TBD")
         db.session.add(employer)
-        db.session.commit()
+    elif new_user.role == 'job_seeker':
+        job_seeker = JobSeeker(id=new_user.id)
+        db.session.add(job_seeker)
+    
+    db.session.commit()
 
-    # ✅ Clean up pending
-    pending_users.pop(email)
+    # ✅ Clean up pending user from database
+    db.session.delete(pending_user)
+    db.session.commit()
 
     # ✅ Issue access token
     access_token = create_access_token(identity=str(new_user.id))
@@ -1655,6 +1689,7 @@ def verify_email():
 
 @main.route("/register", methods=["POST"])
 def register():
+    from datetime import datetime, timezone
     data = request.get_json()
     email = data.get("email")
     code = data.get("code")
@@ -1662,17 +1697,31 @@ def register():
     if not email or not code:
         return jsonify({"message": "Email and code are required."}), 400
 
-    # Check for pending registration
-    pending = pending_users.get(email)
-    if not pending:
+    # Check for pending registration in database
+    pending_user = PendingUser.query.filter_by(email=email).first()
+    if not pending_user:
         return jsonify({"message": "No pending registration for this email."}), 404
 
-    if pending["code"] != code:
+    # Check if the pending registration has expired
+    # Handle both naive and timezone-aware datetime comparisons
+    current_time = datetime.now(timezone.utc)
+    expires_at = pending_user.expires_at
+    
+    # If expires_at is naive, make it timezone-aware (assume UTC)
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    
+    if expires_at < current_time:
+        db.session.delete(pending_user)
+        db.session.commit()
+        return jsonify({"message": "Verification code has expired. Please request a new one."}), 400
+
+    if pending_user.verification_code != code:
         return jsonify({"message": "Invalid verification code."}), 400
 
     # Create user
-    user = User(name=pending["name"], email=email, role=pending["role"])
-    user.set_password(pending["password"])
+    user = User(name=pending_user.name, email=email, role=pending_user.role)
+    user.password_hash = pending_user.password_hash  # Already hashed
     user.is_verified = True
     db.session.add(user)
     db.session.commit()  # Commit user first, to get user ID
@@ -1690,8 +1739,9 @@ def register():
 
     db.session.commit()  # Commit changes, including Employer/JobSeeker
 
-    # Clean up pending registration
-    del pending_users[email]
+    # Clean up pending registration from database
+    db.session.delete(pending_user)
+    db.session.commit()
 
     # Generate JWT token
     token = create_access_token(identity=str(user.id))
@@ -1796,6 +1846,21 @@ def change_password():
     user.set_password(new_password)
     db.session.commit()
     return jsonify({"message": "Password updated successfully"}), 200
+
+
+@main.route("/cleanup-expired-registrations", methods=["POST"])
+@admin_required
+def cleanup_expired_registrations():
+    """Admin endpoint to clean up expired pending user registrations"""
+    try:
+        count = PendingUser.cleanup_expired()
+        return jsonify({
+            "message": f"Successfully cleaned up {count} expired pending registrations"
+        }), 200
+    except Exception as e:
+        return jsonify({
+            "error": f"Failed to cleanup expired registrations: {str(e)}"
+        }), 500
 
 
 @main.route('/delete-account', methods=['DELETE'])

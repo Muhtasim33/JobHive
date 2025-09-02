@@ -38,7 +38,7 @@ def create_app():
 
     # create tables automatically in development
     with app.app_context():
-        from app.models import User, JobSeeker, Employer, Admin, Job, Application, Resume, SavedJob, Report, Notification
+        from app.models import User, JobSeeker, Employer, Admin, Job, Application, Resume, SavedJob, Report, Notification, PendingUser
         db.create_all()
         print("✅ All tables created!")
 
