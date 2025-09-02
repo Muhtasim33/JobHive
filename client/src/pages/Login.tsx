@@ -5,6 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Link, useLocation } from 'wouter';
 import { useUser } from '@/contexts/UserContext';
 import { useToast } from '@/hooks/use-toast';
+import loginImage from '@/assets/login.png';
 
 /**
  * Login Page Component
@@ -200,7 +201,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
             <div className="mt-6">
               <img
-                src = "/src/assets/login.png" 
+                src={loginImage}
                 alt="People collaborating" 
                 className="w-3/4 mx-auto"
               />

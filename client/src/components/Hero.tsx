@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import heroImage from "@/assets/hero.png";
 
 /**
  * Hero Component
@@ -59,7 +60,7 @@ const Hero = () => {
             ref={heroImageRef}
           >
             <img 
-              src="/src/assets/hero.png"
+              src={heroImage}
               alt="Young professional looking for job opportunities" 
               className="rounded-lg shadow-xl mx-auto lg:ml-auto w-4/5 translate-y-4 translate-x-12" 
             /> 

@@ -6,6 +6,7 @@ import { useUser } from "@/contexts/UserContext";
 import { BellIcon } from "lucide-react";
 import { Popover } from "@headlessui/react";
 import { formatDistanceToNow } from "date-fns";
+import logoImage from "@/assets/logo1.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -242,7 +243,7 @@ const renderNavigationLinks = () => {
         <div className="container h-full flex items-center justify-between">
           {/* Logo */}
           <button onClick={() => handleNavigate("/")} className="flex items-center focus:outline-none">
-            <img src="/src/assets/logo1.png" alt="Logo" className="h-10 w-10 mr-2" />
+            <img src={logoImage} alt="Logo" className="h-10 w-10 mr-2" />
             <span className="text-2xl font-bold">Job<span className="text-[#F6C500]">Hive</span></span>
           </button>
           

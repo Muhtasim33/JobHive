@@ -1,4 +1,5 @@
 import { Link, useLocation } from "wouter";
+import logoImage from "@/assets/logo1.png";
 
 /**
  * Footer Component
@@ -55,7 +56,7 @@ const Footer = () => {
               onClick={() => handleNavigate("/")} 
               className="flex items-center mb-4 focus:outline-none"
             >
-              <img src="/src/assets/logo1.png" alt="JobHive Logo" className="w-12 h-12 object-contain mr-2" />
+              <img src={logoImage} alt="JobHive Logo" className="w-12 h-12 object-contain mr-2" />
               <span className="text-2xl font-bold text-white">Job<span className="text-[#F6C500]">Hive</span></span>
             </button>
             <p className="text-gray-400 mb-4">

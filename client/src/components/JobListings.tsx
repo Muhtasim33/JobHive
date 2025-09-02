@@ -110,7 +110,6 @@ useEffect(() => {
       const data = await response.json();
 
       const mapped = data.map((job: any) => {
-        console.log("Raw job type from backend:", job.job_type); // 🔍 Logs actual field
         return {
           ...job,
           type: job.type || job.job_type || "", // ✅ Ensure 'type' is always defined
@@ -166,7 +165,6 @@ useEffect(() => {
     const selectedType = normalizeType(localFilters.jobType);
     result = result.filter(job => {
       const normalizedJobType = normalizeType(job.type);
-      console.log("Comparing job type:", normalizedJobType, "with selected:", selectedType); // 🔍
       return normalizedJobType === selectedType;
     });
   }
@@ -226,7 +224,6 @@ useEffect(() => {
     return 0;
   });
 
-  console.log("Filtered job results:", result); // ✅ Final result
   setFilteredJobs(result);
 }, [localFilters, allJobs]);
 
