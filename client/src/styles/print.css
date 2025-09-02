@@ -1,0 +1,135 @@
+/* Print-specific styles for resume templates */
+
+/* Global print settings */
+@page {
+  size: A4 portrait;
+  margin: 0.5in;
+  padding: 0;
+}
+
+@media print {
+  /* Hide all content except the resume when printing */
+  body * {
+    visibility: hidden;
+  }
+  
+  #resume-to-print,
+  #resume-to-print * {
+    visibility: visible;
+  }
+  
+  #resume-to-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-width: 21cm;
+    min-height: 29.7cm;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    box-shadow: none !important;
+  }
+  
+  /* Common print styles for all templates */
+  #resume-to-print h1, 
+  #resume-to-print h2, 
+  #resume-to-print h3, 
+  #resume-to-print h4 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  
+  #resume-to-print section, 
+  #resume-to-print .section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    position: relative;
+    display: block;
+  }
+  
+  #resume-to-print .section-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  #resume-to-print ul, 
+  #resume-to-print li {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  /* Hide background patterns and shadows */
+  #resume-to-print * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  /* Ensure proper display of colored backgrounds */
+  #resume-to-print .bg-white,
+  #resume-to-print .bg-gray-100,
+  #resume-to-print .bg-gray-200 {
+    background-color: white !important;
+    background: white !important;
+  }
+  
+  /* Make sure color elements print properly */
+  #resume-to-print .bg-\[\#FFDC5E\],
+  #resume-to-print .bg-\[\#FFB800\],
+  #resume-to-print .text-\[\#FFB800\] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  /* Ensure proper layout for grid/flex systems */
+  #resume-to-print .flex {
+    display: flex !important;
+  }
+  
+  #resume-to-print .grid {
+    display: grid !important;
+  }
+  
+  /* Template-specific print fixes */
+  
+  /* Creative Template */
+  #resume-to-print.creative-template {
+    display: flex !important;
+    flex-direction: row !important;
+  }
+  
+  #resume-to-print.creative-template > div:first-child {
+    width: 33% !important;
+  }
+  
+  #resume-to-print.creative-template > div:last-child {
+    width: 67% !important;
+  }
+  
+  /* Minimal Template */
+  #resume-to-print.minimal-template {
+    padding: 0 !important;
+  }
+  
+  /* Academic Template */
+  #resume-to-print.academic-template {
+    font-family: serif !important;
+  }
+  
+  /* Adjust font sizes for print */
+  #resume-to-print {
+    font-size: 11pt !important;
+  }
+  
+  #resume-to-print h1 {
+    font-size: 18pt !important;
+  }
+  
+  #resume-to-print h2 {
+    font-size: 14pt !important;
+  }
+  
+  #resume-to-print h3 {
+    font-size: 12pt !important;
+  }
+}

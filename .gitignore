@@ -1,0 +1,32 @@
+# node_modules
+# dist
+# .DS_Store
+# server/public
+# vite.config.ts.*
+# *.tar.gz
+
+
+# Node.js / React
+node_modules/
+dist/
+.vite/
+*.log
+
+# React build + config
+vite.config.ts.*
+client/.env
+
+# Python / Flask
+server/venv/
+server/__pycache__/
+server/*.pyc
+server/.env
+server/uploads/
+
+# VS Code / OS
+.DS_Store
+*.tar.gz
+*.zip
+.env
+venv/
+server/uploads/
