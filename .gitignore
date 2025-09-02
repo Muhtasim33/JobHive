@@ -30,3 +30,5 @@ server/uploads/
 .env
 venv/
 server/uploads/
+
+.vercel

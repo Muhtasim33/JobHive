@@ -7,7 +7,8 @@
     "check": "tsc",
     "dev": "cd client && vite",
     "build": "cd client && vite build",
-    "preview": "cd client && vite preview"
+    "preview": "cd client && vite preview",
+    "deploy:vercel": "cd client && npm run build"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.4",
