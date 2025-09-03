@@ -1,5 +1,5 @@
 from urllib import request
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -50,13 +50,29 @@ def create_app():
     app.register_blueprint(main, url_prefix='/api')
     app.register_blueprint(admin_bp)
 
-    @app.route("/")
-    def app_root():
-        return jsonify({"message": "JobHive Flask API is running! Access API routes at /api/..."})
-
     @app.route('/uploads/<path:filename>')
     def uploaded_file(filename):
         return app.send_static_file(filename)
+
+    # SPA routing: Serve React app for all non-API routes
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def serve_spa(path):
+        # Check if this is an API route
+        if path.startswith('api/') or path.startswith('uploads/'):
+            return jsonify({"error": "Not found"}), 404
+        
+        # Check if the requested file exists in the client build directory
+        client_build_dir = os.path.join(os.getcwd(), '..', 'client', 'dist')
+        if os.path.exists(client_build_dir):
+            # Check if it's a static file
+            if path and os.path.exists(os.path.join(client_build_dir, path)):
+                return send_from_directory(client_build_dir, path)
+            # For all other routes, serve index.html (SPA routing)
+            return send_from_directory(client_build_dir, 'index.html')
+        else:
+            # If build directory doesn't exist, return a helpful message for development
+            return jsonify({"message": "JobHive Flask API is running! Access API routes at /api/... | For frontend, run the client development server."}), 200
 
     return app
 
