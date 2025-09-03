@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Link, useLocation } from 'wouter';
 import RegistrationProgress from '@/components/auth/RegistrationProgress';
 import logo from '@/assets/logo.svg';
+import { apiUrl } from '@/config';
 
 /**
  * Employer Registration - Social Media Step
@@ -59,7 +60,7 @@ const SocialMedia = () => {
   }
 
   try {
-    const res = await fetch("http://localhost:8000/api/employer/social-media", {
+    const res = await fetch(apiUrl("/api/employer/social-media"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

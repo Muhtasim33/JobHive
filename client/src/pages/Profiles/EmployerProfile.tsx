@@ -213,7 +213,7 @@ const handleChangePassword = async () => {
         })
       });
 
-      await fetch('http://localhost:8000/api/employer/contact-info', {
+      await fetch(apiUrl('/api/employer/contact-info'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -226,7 +226,7 @@ const handleChangePassword = async () => {
 
       if (formData.social_links) {
         const linksArray = Object.entries(formData.social_links).map(([platform, url]) => ({ platform, url }));
-        await fetch('http://localhost:8000/api/employer/social-media', {
+        await fetch(apiUrl('/api/employer/social-media'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: userId, social_links: linksArray })
@@ -246,7 +246,7 @@ const handleChangePassword = async () => {
     if (!confirmed) return;
     const token = localStorage.getItem("access_token");
     try {
-      const res = await fetch("http://localhost:8000/api/delete-account", {
+      const res = await fetch(apiUrl("/api/delete-account"), {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -294,7 +294,7 @@ const handleChangePassword = async () => {
     ) : (
       companyInfo.banner_url && (
         <img
-          src={`http://localhost:8000${companyInfo.banner_url}`}
+          src={imageUrl(companyInfo.banner_url)}
           alt="Company Banner"
           className="w-full h-48 object-cover rounded-t"
         />
@@ -303,7 +303,7 @@ const handleChangePassword = async () => {
 
     <CardHeader className="flex flex-col sm:flex-row items-center gap-6">
       <Avatar className="w-32 h-32 border-4 border-[#F6C500]">
-        <AvatarImage src={`http://localhost:8000${companyInfo.logo_url}`} />
+        <AvatarImage src={imageUrl(companyInfo.logo_url)} />
         <AvatarFallback>{formData.company_name?.charAt(0).toUpperCase() || 'C'}</AvatarFallback>
       </Avatar>
       <div>

@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Link, useLocation } from 'wouter';
 import RegistrationProgress from '@/components/auth/RegistrationProgress';
 import logo from '@/assets/logo.svg';
+import { apiUrl, imageUrl } from '@/config';
 
 const CompanyInfo = () => {
   const [companyName, setCompanyName] = useState('');
@@ -29,7 +30,7 @@ const uploadImage = async (file: File, type: 'logo' | 'banner') => {
   formData.append('user_id', userId);
   formData.append('image_type', type);
 
-  const res = await fetch('http://localhost:8000/api/employer/upload-image', {
+  const res = await fetch(apiUrl('/api/employer/upload-image'), {
     method: 'POST',
     body: formData,
   });
@@ -94,7 +95,7 @@ const uploadImage = async (file: File, type: 'logo' | 'banner') => {
       return;
     }
 
-    const res = await fetch("http://localhost:8000/api/employer/company-info", {
+    const res = await fetch(apiUrl("/api/employer/company-info"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

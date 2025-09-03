@@ -6,6 +6,7 @@ import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/hooks/use-toast";
 import { getResumeData } from "@/utils/resumeUtils";
 import { getAppliedJobs } from "@/utils/jobUtils";
+import { apiUrl, imageUrl } from "@/config";
 
 
 interface Job {
@@ -43,7 +44,7 @@ const JobDetailsPage = () => {
   try {
     const token = localStorage.getItem("access_token");
 
-    const response = await fetch("http://localhost:8000/api/reports", {
+    const response = await fetch(apiUrl("/api/reports"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +77,7 @@ const JobDetailsPage = () => {
 
   useEffect(() => {
     const fetchJob = async () => {
-      const res = await fetch(`http://localhost:8000/api/jobs/${id}`);
+      const res = await fetch(apiUrl(`/api/jobs/${id}`));
       const data = await res.json();
       setJob(data);
     };
@@ -123,7 +124,7 @@ const handleApply = async () => {
   try {
     const token = localStorage.getItem("access_token");
 
-    const resumeRes = await fetch("http://localhost:8000/api/resume", {
+    const resumeRes = await fetch(apiUrl("/api/resume"), {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -138,7 +139,7 @@ const handleApply = async () => {
       return;
     }
 
-    const res = await fetch("http://localhost:8000/api/apply", {
+    const res = await fetch(apiUrl("/api/apply"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -171,7 +172,7 @@ const handleApply = async () => {
   const handleSave = async () => {
     if (!user?.id) return;
 
-    const endpoint = isSaved ? "http://localhost:8000/api/unsave" : "http://localhost:8000/api/save";
+    const endpoint = isSaved ? apiUrl("/api/unsave") : apiUrl("/api/save");
 
     try {
       const res = await fetch(endpoint, {
@@ -214,7 +215,7 @@ const handleApply = async () => {
           <div className="flex items-center gap-3">
             {job.company_logo && (
               <img
-                src={`http://localhost:8000${job.company_logo}`}
+                src={imageUrl(job.company_logo)}
                 alt={`${job.company_name} logo`}
                 className="w-10 h-10 object-cover rounded-full border"
               />

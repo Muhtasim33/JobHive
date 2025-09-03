@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Link, useLocation } from 'wouter';
 import RegistrationProgress from '@/components/auth/RegistrationProgress';
 import logo from '@/assets/logo.svg';
+import { apiUrl } from '@/config';
 
 /**
  * Employer Registration - Contact Step
@@ -54,7 +55,7 @@ const Contact = () => {
   }
 
   try {
-    const res = await fetch("http://localhost:8000/api/employer/contact-info", {
+    const res = await fetch(apiUrl("/api/employer/contact-info"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

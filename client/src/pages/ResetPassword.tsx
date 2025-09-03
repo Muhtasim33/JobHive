@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+import { apiUrl } from "@/config";
 
 const ResetPassword = () => {
   const { toast } = useToast();
@@ -19,7 +20,7 @@ const ResetPassword = () => {
 
     setIsSubmitting(true);
     try {
-      const res = await fetch("http://localhost:8000/api/reset-password", {
+      const res = await fetch(apiUrl("/api/reset-password"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, code, new_password: newPassword }),

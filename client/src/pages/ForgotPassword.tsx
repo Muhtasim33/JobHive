@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
+import { apiUrl } from "@/config";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ const ForgotPassword = () => {
 
     setIsSending(true);
     try {
-      const res = await fetch("http://localhost:8000/api/request-password-reset", {
+      const res = await fetch(apiUrl("/api/request-password-reset"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

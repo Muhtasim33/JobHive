@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Link, useLocation } from 'wouter';
 import RegistrationProgress from '@/components/auth/RegistrationProgress';
 import logo from '@/assets/logo.svg';
+import { apiUrl, imageUrl } from '@/config';
 
 /**
  * Student Registration Page
@@ -54,7 +55,7 @@ const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const token = localStorage.getItem("access_token");
 
     try {
-      const res = await fetch("http://localhost:8000/api/upload-resume", {
+      const res = await fetch(apiUrl("/api/upload-resume"), {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`, // ✅ This was missing
@@ -101,14 +102,14 @@ const handleResumeUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     formData.append("profile_picture", file);
 
     try {
-      const res = await fetch("http://localhost:8000/api/upload/profile-picture", {
+      const res = await fetch(apiUrl("/api/upload/profile-picture"), {
         method: "POST",
         body: formData,
       });
 
       const data = await res.json();
       if (res.ok) {
-        setProfilePicturePreview(`http://localhost:8000${data.url}`);
+        setProfilePicturePreview(imageUrl(data.url));
       } else {
         alert(data.error || "Failed to upload profile picture.");
       }
@@ -239,7 +240,7 @@ const handleNext = async (e: React.FormEvent) => {
       const formData = new FormData();
       formData.append("profile_picture", profilePicture);
 
-      const uploadResponse = await fetch("http://localhost:8000/api/upload/profile-picture", {
+      const uploadResponse = await fetch(apiUrl("/api/upload/profile-picture"), {
         method: "POST",
         body: formData,
       });
@@ -250,7 +251,7 @@ const handleNext = async (e: React.FormEvent) => {
         return;
       }
 
-      uploadedImageUrl = `http://localhost:8000${uploadData.url}`;
+      uploadedImageUrl = imageUrl(uploadData.url);
     }
 
     const mainEducation = education[0];
@@ -258,7 +259,7 @@ const handleNext = async (e: React.FormEvent) => {
     const university = mainEducation?.institution || '';
 
     // Submit profile data even if resumeUrl is null
-    const response = await fetch("http://localhost:8000/api/job-seeker/profile", {
+    const response = await fetch(apiUrl("/api/job-seeker/profile"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

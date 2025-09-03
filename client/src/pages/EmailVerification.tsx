@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { useLocation } from 'wouter';
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/contexts/UserContext"; // or wherever your auth context is
+import { apiUrl } from "@/config";
 
 
 /**
@@ -80,7 +81,7 @@ const sendCodeAndStartTimer = async (targetEmail: string) => {
   }
 
   try {
-    const res = await fetch("http://localhost:8000/api/send-verification-code", {
+    const res = await fetch(apiUrl("/api/send-verification-code"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email: targetEmail, password, role }),
@@ -123,7 +124,7 @@ const handleVerifyEmail = async () => {
   setIsVerifying(true);
 
   try {
-    const res = await fetch("http://localhost:8000/api/verify-email", {
+    const res = await fetch(apiUrl("/api/verify-email"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
