@@ -2,6 +2,7 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { ResumeData } from '@/components/resume-templates';
 import axios from "axios";
+import { API_BASE } from '../config';
 
 
 
@@ -150,7 +151,7 @@ export const saveResumeData = async (data: Partial<ResumeData>): Promise<void> =
     }
 
     await axios.patch(
-      "http://localhost:8000/api/resume",
+      `${API_BASE}/api/resume`,
       data,
       {
         headers: {
@@ -175,7 +176,7 @@ export const getResumeData = async () => {
   const token = localStorage.getItem("access_token");
 
   try {
-    const res = await fetch("http://localhost:8000/api/resume", {
+    const res = await fetch(`${API_BASE}/api/resume`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

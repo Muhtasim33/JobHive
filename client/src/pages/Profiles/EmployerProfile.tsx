@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLocation } from 'wouter';
 import { useToast } from '@/hooks/use-toast';
+import { apiUrl, imageUrl } from '@/config';
 
 const platformIcons = {
   facebook: <FaFacebook className="mr-2" />, 
@@ -67,7 +68,7 @@ const EmployerProfile: React.FC = () => {
     formData.append('user_id', userId);
     formData.append('image_type', type);
 
-    const res = await fetch('http://localhost:8000/api/employer/upload-image', {
+    const res = await fetch(apiUrl('/api/employer/upload-image'), {
       method: 'POST',
       body: formData,
     });
@@ -95,7 +96,7 @@ const EmployerProfile: React.FC = () => {
   useEffect(() => {
     if (!isAuthenticated) return;
     const token = localStorage.getItem('access_token');
-    fetch('http://localhost:8000/api/employer/profile', {
+    fetch(apiUrl('/api/employer/profile'), {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -142,7 +143,7 @@ const handleChangePassword = async () => {
 
   const token = localStorage.getItem('access_token');
   try {
-    const res = await fetch('http://localhost:8000/api/change-password', {
+    const res = await fetch(apiUrl('/api/change-password'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -190,7 +191,7 @@ const handleChangePassword = async () => {
     const token = localStorage.getItem('access_token');
 
     try {
-      await fetch('http://localhost:8000/api/employer/company-info', {
+      await fetch(apiUrl('/api/employer/company-info'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -200,7 +201,7 @@ const handleChangePassword = async () => {
         })
       });
 
-      await fetch('http://localhost:8000/api/employer/founding-info', {
+      await fetch(apiUrl('/api/employer/founding-info'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

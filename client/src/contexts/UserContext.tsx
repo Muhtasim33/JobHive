@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useLocation } from "wouter";
-
+import { API_BASE } from '../config';
 
 import axios from 'axios';
 
@@ -169,7 +169,7 @@ const sendVerificationCode = async (
       role: mappedRole,
     };
 
-    const res = await fetch("http://localhost:8000/api/send-verification-code", {
+    const res = await fetch(`${API_BASE}/api/send-verification-code`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -229,7 +229,7 @@ const sendVerificationCode = async (
 
 const login = async (email: string, password: string): Promise<boolean> => {
   try {
-    const response = await fetch("http://localhost:8000/api/login", {
+    const response = await fetch(`${API_BASE}/api/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -304,7 +304,7 @@ const register = async (
       code: verificationCode,
     };
 
-    const res = await fetch("http://localhost:8000/api/register", {
+    const res = await fetch(`${API_BASE}/api/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -350,7 +350,7 @@ const updateProfile = async (updatedData: Partial<User>): Promise<boolean> => {
       profile_pic_url: updatedData.profilePicture || null,
     };
 
-    const res = await fetch("http://localhost:8000/api/job-seeker/profile", {
+    const res = await fetch(`${API_BASE}/api/job-seeker/profile`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,5 +1,7 @@
+import { API_BASE } from '../config';
+
 export const getAppliedJobs = async (jobSeekerId: number) => {
-  const res = await fetch(`http://localhost:8000/api/job-seeker/${jobSeekerId}/applied-jobs`);
+  const res = await fetch(`${API_BASE}/api/job-seeker/${jobSeekerId}/applied-jobs`);
   if (!res.ok) throw new Error("Failed to fetch applied jobs");
   return await res.json();
 };
@@ -9,7 +11,7 @@ export const getAppliedJobs = async (jobSeekerId: number) => {
 
 
 export const saveJob = async (seekerId: number, jobId: number) => {
-  const res = await fetch(`http://localhost:8000/api/job-seeker/${seekerId}/save/${jobId}`, {
+  const res = await fetch(`${API_BASE}/api/job-seeker/${seekerId}/save/${jobId}`, {
     method: 'POST',
   });
   if (!res.ok) throw new Error("Failed to save job");
@@ -17,7 +19,7 @@ export const saveJob = async (seekerId: number, jobId: number) => {
 };
 
 export const getSavedJobs = async (seekerId: number) => {
-  const res = await fetch(`http://localhost:8000/api/job-seeker/${seekerId}/saved-jobs`);
+  const res = await fetch(`${API_BASE}/api/job-seeker/${seekerId}/saved-jobs`);
   if (!res.ok) throw new Error("Failed to fetch saved jobs");
   return await res.json();
 };

@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { getResumeData } from "@/utils/resumeUtils";
 import { Link } from "wouter";
+import { API_BASE } from '../config';
 
 interface JobCardProps {
   job: Job;
@@ -57,7 +58,7 @@ const JobCard = ({
     if (!user?.id) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/api/save`, {
+      const res = await fetch(`${API_BASE}/api/save`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ job_id: jobId, user_id: user.id }),
@@ -101,13 +102,13 @@ const handleApply = async () => {
 
   try {
     const token = localStorage.getItem("access_token");
-    const resumeRes = await fetch("http://localhost:8000/api/resume", {
+    const resumeRes = await fetch(`${API_BASE}/api/resume`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
     const resumeSnapshot = await resumeRes.json();
 
-    const res = await fetch("http://localhost:8000/api/apply", {
+    const res = await fetch(`${API_BASE}/api/apply`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -174,7 +175,7 @@ const handleApply = async () => {
         <div className="flex items-center gap-2 mt-1">
           {job.company_logo && (
             <img
-              src={`http://localhost:8000${job.company_logo}`}
+              src={`${API_BASE}${job.company_logo}`}
               alt={`${job.company_name} logo`}
               className="w-6 h-6 rounded-full object-cover"
             />

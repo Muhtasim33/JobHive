@@ -11,6 +11,7 @@ import { getResumeData } from "@/utils/resumeUtils";
 import { useUser } from "@/contexts/UserContext";
 import { getAppliedJobs } from "@/utils/jobUtils";
 import { useLocation } from "wouter";
+import { API_BASE } from '../config';
 
 export interface Job {
   id: number;
@@ -89,7 +90,7 @@ const normalizeType = (val: string | null | undefined) =>
       if (!user?.id || !isRole("job_seeker")) return;
 
       try {
-        const res = await fetch(`http://localhost:8000/api/job-seeker/${user.id}/saved-jobs`);
+        const res = await fetch(`${API_BASE}/api/job-seeker/${user.id}/saved-jobs`);
         if (!res.ok) throw new Error("Failed to fetch saved jobs");
 
         const data = await res.json();
@@ -106,7 +107,7 @@ const normalizeType = (val: string | null | undefined) =>
 useEffect(() => {
   const fetchJobs = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/jobs");
+      const response = await fetch(`${API_BASE}/api/jobs`);
       const data = await response.json();
 
       const mapped = data.map((job: any) => {
@@ -249,8 +250,8 @@ useEffect(() => {
 
     try {
       const endpoint = isAlreadySaved
-        ? "http://localhost:8000/api/unsave"
-        : "http://localhost:8000/api/save";
+        ? `${API_BASE}/api/unsave`
+        : `${API_BASE}/api/save`;
 
       const res = await fetch(endpoint, {
         method: "POST",
@@ -286,7 +287,7 @@ const handleApply = async (jobId: number) => {
 
   try {
     const token = localStorage.getItem("access_token");
-    const resumeRes = await fetch("http://localhost:8000/api/resume", {
+    const resumeRes = await fetch(`${API_BASE}/api/resume`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -300,7 +301,7 @@ const handleApply = async (jobId: number) => {
       return;
     }
 
-    const res = await fetch("http://localhost:8000/api/apply", {
+    const res = await fetch(`${API_BASE}/api/apply`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

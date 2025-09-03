@@ -7,6 +7,7 @@ import { BellIcon } from "lucide-react";
 import { Popover } from "@headlessui/react";
 import { formatDistanceToNow } from "date-fns";
 import logoImage from "@/assets/logo1.png";
+import { API_BASE } from '../config';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,7 +47,7 @@ const handleMarkAllRead = async () => {
   if (!user?.id) return; // 🔒 Type-safe check to avoid error
 
   try {
-    await fetch(`http://localhost:8000/api/notifications/${user.id}/mark-all-read`, {
+    await fetch(`${API_BASE}/api/notifications/${user.id}/mark-all-read`, {
       method: "PATCH",
     });
     fetchNotifications(); // ✅ Refresh local state
@@ -59,7 +60,7 @@ const handleMarkAllRead = async () => {
 const fetchNotifications = async () => {
   if (!user?.id) return;
   try {
-    const res = await fetch(`http://localhost:8000/api/notifications/${user.id}`);
+    const res = await fetch(`${API_BASE}/api/notifications/${user.id}`);
     const data = await res.json();
     setNotifications(data.notifications);
   } catch (err) {

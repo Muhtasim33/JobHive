@@ -12,6 +12,7 @@ import { getAppliedJobs } from "@/utils/jobUtils";
 import { calculateResumeCompletion } from "@/utils/calculateResumeCompletion";
 import { getResumeData } from "@/utils/resumeUtils"; // or wherever it lives
 import { Link } from "wouter";
+import { API_BASE } from '../config';
 
 
 
@@ -85,7 +86,7 @@ useEffect(() => {
     if (!user?.id || !isRole("job_seeker")) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/api/job-seeker/${user.id}/saved-jobs`);
+      const res = await fetch(`${API_BASE}/api/job-seeker/${user.id}/saved-jobs`);
       if (!res.ok) throw new Error("Failed to fetch saved jobs");
       const data = await res.json();
       setSavedJobs(data);
@@ -117,7 +118,7 @@ useEffect(() => {
  const fetchMyJobs = async () => {
   if (user?.id) {
     try {
-      const res = await fetch(`http://localhost:8000/api/employer/${user.id}/jobs`);
+      const res = await fetch(`${API_BASE}/api/employer/${user.id}/jobs`);
       const data = await res.json();
       setMyJobs(data.jobs);
     } catch (error) {
@@ -139,7 +140,7 @@ const toggleStatus = async (job: Job) => {
   const newStatus = job.status === "expired" ? "active" : "expired";
 
   try {
-    await fetch(`http://localhost:8000/api/jobs/${job.id}/status`, {
+    await fetch(`${API_BASE}/api/jobs/${job.id}/status`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus }),
@@ -166,7 +167,7 @@ const deleteJob = async (jobId: number) => {
   if (!confirmed) return;
 
   try {
-    await fetch(`http://localhost:8000/api/jobs/${jobId}`, {
+    await fetch(`${API_BASE}/api/jobs/${jobId}`, {
       method: 'DELETE',
     });
 
