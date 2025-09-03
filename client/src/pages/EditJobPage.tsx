@@ -3,6 +3,7 @@ import { useLocation, useRoute } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import JobForm from "@/components/forms/JobForm";
+import { apiUrl } from "@/config";
 
 interface JobFormValues {
   title: string;
@@ -39,7 +40,7 @@ const EditJobPage = () => {
   useEffect(() => {
     if (!jobId) return;
 
-    fetch(`http://localhost:8000/api/jobs/${jobId}`)
+    fetch(apiUrl(`/api/jobs/${jobId}`))
       .then((res) => {
         if (!res.ok) throw new Error("Job not found");
         return res.json();
@@ -70,7 +71,7 @@ const EditJobPage = () => {
 
   const handleUpdateJob = async (updatedData: JobFormValues) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/jobs/${jobId}`, {
+      const response = await fetch(apiUrl(`/api/jobs/${jobId}`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedData),

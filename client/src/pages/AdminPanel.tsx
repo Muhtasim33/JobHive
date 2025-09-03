@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatText, formatStatus, formatDate } from "@/utils/formatters";
-
+import { apiUrl } from "@/config";
 
 /**
  * Admin Panel Page
@@ -84,7 +84,7 @@ useEffect(() => {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const res = await fetch("http://localhost:8000/api/admin/stats", {
+      const res = await fetch(apiUrl("/api/admin/stats"), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -113,7 +113,7 @@ useEffect(() => {
   const fetchReports = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const res = await fetch("http://localhost:8000/api/admin/reports", {
+      const res = await fetch(apiUrl("/api/admin/reports"), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -139,7 +139,7 @@ useEffect(() => {
 const handleResolve = async (reportId: number) => {
   try {
     const token = localStorage.getItem("access_token");
-    const res = await fetch(`http://localhost:8000/api/admin/reports/${reportId}/resolve`, {
+    const res = await fetch(apiUrl(`/api/admin/reports/${reportId}/resolve`), {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -172,7 +172,7 @@ const handleDeleteJob = async (jobId: number) => {
   try {
     const token = localStorage.getItem("access_token");
 
-    const response = await fetch(`http://localhost:8000/api/jobs/${jobId}`, {
+    const response = await fetch(apiUrl(`/api/jobs/${jobId}`), {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -204,7 +204,7 @@ useEffect(() => {
     try {
       const token = localStorage.getItem("access_token");
 
-      const response = await fetch("http://localhost:8000/api/admin/jobs", {
+      const response = await fetch(apiUrl("/api/admin/jobs"), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -239,7 +239,7 @@ useEffect(() => {
         throw new Error("No access token found");
       }
 
-      const response = await fetch("http://localhost:8000/api/admin/users", {
+      const response = await fetch(apiUrl("/api/admin/users"), {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
