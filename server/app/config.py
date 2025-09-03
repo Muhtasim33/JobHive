@@ -11,9 +11,5 @@ class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "fallback-secret")
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "fallback-jwt-key")
     
-    
-
-
-
 # This will load your .env file and configure the database.
 
