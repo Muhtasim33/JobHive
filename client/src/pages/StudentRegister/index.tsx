@@ -26,7 +26,7 @@ const StudentRegister = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [, navigate] = useLocation();
   const [phoneError, setPhoneError] = useState<string | null>(null);
-  const isValidJordanianPhone = (number: string) => /^7\d{8}$/.test(number);// expects 9 digits starting with 7
+  const isValidBangladeshPhone = (number: string) => /^7\d{8}$/.test(number);// expects 9 digits starting with 7
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
   const [resumeParsedData, setResumeParsedData] = useState<any>(null);
@@ -391,7 +391,7 @@ const handleNext = async (e: React.FormEvent) => {
       <div className="mb-6">
         <div>
       <label htmlFor="phone" className="block font-medium mb-2">
-        Phone (Jordanian)
+        Phone (Bangladesh)
       </label>
       <div className="flex items-center">
         <span className="px-3 py-2 border border-r-0 rounded-l-md bg-gray-100 text-gray-700 text-sm">+880</span>
