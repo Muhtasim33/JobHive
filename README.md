@@ -89,7 +89,7 @@ Extras
 Affinda API, Brevo SMTP, JWT, Cloud Deployment Ready
 
 👋 Author
-Made with ❤️ by Abrar Hossain Zahin
+Made with Jahin,Sakif,Emon
 
 🙋 Contact
 If you’d like to collaborate or hire, connect with me on LinkedIn.
